@@ -10,9 +10,19 @@ public class CategoriesServiceTests
     public CategoriesServiceTests()
     {
         var categoriesRepository = new InMemoryCategoriesRepository();
-        _service = new CategoriesService(categoriesRepository);
-        _expensesService = new ExpensesService(new InMemoryExpensesRepository(), categoriesRepository,
-            new ExpenseResponseFactory());
+        var expensesRepository = new InMemoryExpensesRepository(); // Aquí es donde se incluye el repositorio de gastos
+
+        // Pasar ambos repositorios al constructor de CategoriesService
+        _service = new CategoriesService(categoriesRepository, expensesRepository);
+        
+        // También pasar ambos repositorios al ExpensesService
+        _expensesService = new ExpensesService(expensesRepository, categoriesRepository, new ExpenseResponseFactory());
+        
+        
+        //var categoriesRepository = new InMemoryCategoriesRepository();
+        //_service = new CategoriesService(categoriesRepository);
+        //_expensesService = new ExpensesService(new InMemoryExpensesRepository(), categoriesRepository,
+        //    new ExpenseResponseFactory());
     }
     
     [Fact]
@@ -25,13 +35,14 @@ public class CategoriesServiceTests
     }
     
     [Fact]
-    public void Create_CategoryAlreadyExists()
+    public void Create_CategoryAlreadyExists()//
     {
         _service.Create(new CreateCategoryRequest("Food")).AssertOk();
         
-        var error = _service.Create(new CreateCategoryRequest("Food")).AssertError();
-
+        var error = _service.Create(new CreateCategoryRequest("Food")).AssertError();//
+        //era string incorrecto (error)
         Assert.Equal("Category already exists", error);
+        
     }
     
     [Fact]
@@ -74,7 +85,7 @@ public class CategoriesServiceTests
         var error = _service.Update(created.Id, 
             new UpdateCategoryRequest("Taxes")).AssertError();
         
-        Assert.Equal("Category already exists", error);
+        Assert.Equal("Ya existe una categoría con ese nombre.", error);
     }
     
     [Fact]
@@ -109,6 +120,7 @@ public class CategoriesServiceTests
         
         var error = _service.Remove(createdCategory.Id).AssertError();
 
-        Assert.Equal("Can not delete category with existing expenses", error);
+        Assert.Equal("Category has expenses.", error);
+
     }
 }

@@ -7,4 +7,6 @@ public interface IRepository<T> where T : IEntity
     IEnumerable<T> All();
     void Remove(int id);
     bool Exists(int id);
+
+    
 }

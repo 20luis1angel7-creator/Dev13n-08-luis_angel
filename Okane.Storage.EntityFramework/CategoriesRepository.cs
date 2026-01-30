@@ -23,6 +23,7 @@ namespace Okane.Storage.EntityFramework
             db.Categories.Remove(category);
             db.SaveChanges();
         }
+       
 
         public bool Exists(int id) => 
             db.Categories.Any(x => x.Id == id);

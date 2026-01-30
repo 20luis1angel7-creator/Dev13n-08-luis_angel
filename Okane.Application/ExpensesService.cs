@@ -50,8 +50,25 @@ public class ExpensesService(
         if (!expenses.Exists(id))
             return new NotFoundResult<ExpenseResponse>(
                 $"Expense with id {id} was not found.");
+        //asegura que la actualización de un gasto solo ocurra si la categoría existe
+        Category category;//Declara una variable category
+        try
+        {
+            category = categories.ByName(request.CategoryName);//Intenta obtener un objeto Category
+        }
+        catch (KeyNotFoundException)//captura esta excepción y devuelve un ErrorResult con un mensaje claro.
+        {
+            return new ErrorResult<ExpenseResponse>(
+                $"Category name '{request.CategoryName}' not found.");
+        }
+        
+        
+        //var category =  categories.ByName(request.CategoryName);
+        
+        //if (category == null)
+        //    return new ErrorResult<ExpenseResponse>(
+        //        $"Category name '{request.CategoryName}' not found.");/////
 
-        var category =  categories.ByName(request.CategoryName);
         var updated = expenses.Update(id, request, category);
 
         var response = expenseResponseFactory.Create(updated);

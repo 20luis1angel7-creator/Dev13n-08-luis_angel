@@ -4,7 +4,8 @@ public class InMemoryExpensesRepository : InMemoryRepository<Expense>, IExpenses
 {
     public Expense Update(int id, UpdateExpenseRequest request, Category category)
     {
-        var existing = Entities.First(e => e.Id == id);
+        //FirstOrDefault: sirve para buscar el primer elemento que cumpla una condición y manejar el caso de que no exista de manera controlada.
+        var existing = Entities.FirstOrDefault(e => e.Id == id);
         
         existing.Amount = request.Amount;
         existing.Category = category;

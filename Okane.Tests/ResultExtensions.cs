@@ -20,7 +20,7 @@ public static class ResultExtensions
     
     public static string AssertError<T>(this Result<T> result)
     {
-        var errorResult = Assert.IsType<ErrorResult<T>>(result);
+        var errorResult = Assert.IsType<ErrorResult<T>>(result);//
         return errorResult.Message;
     }
 
